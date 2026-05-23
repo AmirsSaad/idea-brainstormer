@@ -4,360 +4,395 @@
 <meta charset="utf-8">
 <title>Drone Video Relay Add-On with Beam-Tracking Antenna</title>
 <style>
-  /* Tufte-inspired */
-  html { font-size: 15px; }
-  body { font-family: "et-book", Palatino, "Palatino Linotype", "Book Antiqua", Georgia, serif;
-         background: #fffff8; color: #111;
-         max-width: 1400px; margin: 4rem auto; padding: 0 2rem; }
-  article { width: 60%; max-width: 660px; margin-left: 4rem; }
-  @media (max-width: 1000px) { body { margin: 2rem auto; } article { width: auto; margin-left: 0; max-width: 660px; } }
+  * { box-sizing: border-box; }
+  body { font: 14px/1.5 "et-book", Palatino, "Palatino Linotype", Georgia, serif;
+         margin: 0; background: #fffff8; color: #111; }
+  header { padding: 1.5rem 2rem 1rem; border-bottom: 1px solid #ccc;
+           display: flex; align-items: baseline; gap: 1rem; flex-wrap: wrap; }
+  header h1 { margin: 0; font-size: 1.6rem; color: #111; font-weight: 400; font-style: italic; }
+  header .slug { color: #888; font-family: ui-monospace, monospace; font-size: .85rem; }
+  header .date { color: #aaa; margin-left: auto; font-size: .85rem; }
 
-  h1 { font-weight: 400; font-size: 2.4rem; line-height: 1.1; margin: 0 0 .5rem; font-style: italic; }
-  h2 { font-weight: 400; font-size: 1.55rem; font-style: italic; margin: 3rem 0 .8rem; }
-  h3 { font-weight: 400; font-size: 1.15rem; margin: 1.6rem 0 .4rem; }
-  .subtitle { font-style: italic; color: #555; font-size: 1.05rem; margin-bottom: 2.5rem; }
+  .grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 1rem; padding: 1.25rem 2rem 2rem; }
+  .card { background: #fff; border: 1px solid #ddd; border-radius: 6px; padding: 1rem 1.15rem; }
+  .card h2 { margin: 0 0 .65rem; font-size: .75rem; text-transform: uppercase; letter-spacing: .07em;
+             color: #888; font-weight: 600; font-style: normal; }
+  .col-12 { grid-column: span 12; }
+  .col-8  { grid-column: span 8; }
+  .col-4  { grid-column: span 4; }
+  @media (max-width: 880px) { .col-8, .col-4 { grid-column: span 12; } }
 
-  p, li { font-size: 1.05rem; line-height: 1.7; }
-  p { margin: 0 0 1rem; }
+  .overview { font-size: 1.0rem; line-height: 1.6; color: #222; }
+  .overview ul { margin: .5rem 0 0; padding-left: 1.3rem; }
+  .overview li { margin: .25rem 0; }
 
-  /* Sidenotes */
-  .sidenote {
-    float: right; clear: right;
-    margin-right: -60%; width: 50%;
-    font-size: .82rem; line-height: 1.45;
-    color: #444; margin-top: .2rem; margin-bottom: .8rem;
-    font-style: italic;
-  }
-  @media (max-width: 1000px) {
-    .sidenote { float: none; margin: .35rem 0 .85rem 1rem;
-                width: auto; border-left: 2px solid #ccc; padding-left: .75rem; }
-  }
-  .sidenote .label { font-style: normal; color: #888; font-variant: small-caps;
-                     letter-spacing: .03em; margin-right: .25em; }
+  table { width: 100%; border-collapse: collapse; font-size: .9rem; }
+  th, td { padding: .45rem .6rem; text-align: left; border-bottom: 1px solid #e8e8e0; vertical-align: top; }
+  th { color: #888; font-weight: 400; font-style: italic; font-size: .85rem; border-bottom: 1px solid #bbb; }
 
-  /* Tables */
-  table { border-collapse: collapse; width: 100%; margin: .5rem 0 1.5rem; font-size: .95rem; }
-  th, td { padding: .5rem .65rem .5rem 0; text-align: left; border-bottom: 1px solid #ccc; vertical-align: top; }
-  th { font-style: italic; font-weight: 400; color: #555; border-bottom: 1px solid #111; }
-  tr.total td { font-weight: bold; border-top: 2px solid #888; border-bottom: 2px solid #888; }
+  .step { padding: .85rem 0; border-bottom: 1px dashed #ddd; }
+  .step:last-child { border-bottom: 0; }
+  .step-head { display: flex; align-items: center; gap: .6rem; margin-bottom: .3rem; flex-wrap: wrap; }
+  .step-num { background: #f0ece0; color: #444; font-family: ui-monospace, monospace;
+              padding: 1px 7px; border-radius: 3px; font-size: .75rem; }
+  .step-title { font-weight: 600; color: #111; font-size: .95rem; }
+  .pill { font-size: .7rem; padding: 2px 8px; border-radius: 10px; font-family: ui-monospace, monospace; }
+  .pill.s  { background: #e6f5ee; color: #2a7a52; }
+  .pill.m  { background: #fdf3dc; color: #7a5a10; }
+  .pill.l  { background: #fde8d8; color: #7a3a10; }
+  .pill.xl { background: #fde0e0; color: #7a1010; }
+  .step-meta { margin-top: .3rem; font-size: .84rem; color: #666; }
+  .step-meta .label { color: #999; font-weight: 600; font-size: .78rem; text-transform: uppercase; letter-spacing: .04em; }
 
-  /* Steps */
-  ol.steps > li { margin-bottom: 1.8rem; }
-  ol.steps .complexity { font-variant: small-caps; letter-spacing: .04em;
-                         color: #888; font-size: .85rem; margin-left: .4rem; }
-  ol.steps .deps { font-style: italic; color: #777; font-size: .9rem; }
+  .algo-block { background: #fafaf5; border: 1px solid #e8e8e0; border-radius: 4px;
+                padding: .7rem 1rem; margin: .5rem 0 .8rem; font-size: .9rem; }
+  .algo-block h3 { margin: 0 0 .35rem; font-size: .75rem; color: #1a4f7a; text-transform: uppercase;
+                   letter-spacing: .05em; font-weight: 600; font-style: normal; }
+  .algo-block ol, .algo-block ul { margin: 0; padding-left: 1.2rem; }
+  .algo-block li { margin: .22rem 0; line-height: 1.5; }
 
-  /* Links */
+  .spec-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem; margin-top: .5rem; }
+  .spec-item { background: #fafaf5; border: 1px solid #e8e8e0; border-radius: 3px; padding: .45rem .7rem; }
+  .spec-item .label { font-size: .7rem; color: #888; text-transform: uppercase; letter-spacing: .05em; }
+  .spec-item .value { font-size: 1rem; color: #111; font-weight: 600; }
+  .spec-item .sub { font-size: .77rem; color: #999; }
+
+  /* BOM grid */
+  .bom-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: .9rem; margin-top: .6rem; }
+  .bom-item { border: 1px solid #ddd; border-radius: 4px; overflow: hidden; background: #fafaf5; font-size: .8rem; }
+  .bom-item img { width: 100%; height: 100px; object-fit: contain; background: #fff;
+                  padding: 6px; display: block; border-bottom: 1px solid #e8e8e0; }
+  .bom-item .bom-body { padding: .45rem .55rem; }
+  .bom-item .bom-name { font-weight: 700; color: #111; margin-bottom: .15rem; font-size: .82rem; }
+  .bom-item .bom-spec { color: #666; margin-bottom: .25rem; font-size: .76rem; }
+  .bom-item .bom-nums { display: flex; justify-content: space-between; color: #444;
+                        border-top: 1px solid #e8e8e0; padding-top: .25rem; margin-top: .25rem;
+                        font-size: .78rem; font-family: ui-monospace, monospace; }
+  .bom-item .bom-link { display: block; margin-top: .35rem; text-align: center;
+                        background: #e8523a; color: #fff; padding: 3px 6px;
+                        border-radius: 3px; font-size: .73rem; text-decoration: none; border: none; }
+  .bom-item .bom-link:hover { background: #c43c27; }
+  .bom-item .bom-nolink { display: block; margin-top: .35rem; text-align: center;
+                           color: #bbb; font-size: .73rem; }
+  .bom-noimg { height: 100px; display: flex; align-items: center; justify-content: center;
+               background: #f5f5ee; border-bottom: 1px solid #e8e8e0;
+               font-size: .72rem; color: #bbb; text-align: center; padding: 8px; }
+  .bom-total { margin-top: .8rem; font-size: .92rem; color: #333; }
+
+  ul.refs, ul.risks { margin: 0; padding-left: 1.1rem; }
+  ul.refs li, ul.risks li { margin: .4rem 0; }
   a { color: #1a4f7a; text-decoration: none; border-bottom: 1px solid #c4d1dc; }
   a:hover { border-bottom-color: #1a4f7a; }
 
-  /* BOM grid */
-  .bom-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-    gap: 1.2rem;
-    margin: 1rem 0 2rem;
-    width: 160%; /* extend into right margin */
-  }
-  @media (max-width: 1000px) { .bom-grid { width: 100%; } }
-
-  .bom-item {
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    overflow: hidden;
-    background: #fff;
-    font-size: .82rem;
-    line-height: 1.4;
-  }
-  .bom-item img {
-    width: 100%; height: 120px; object-fit: contain;
-    background: #f8f8f0; padding: 6px;
-    display: block;
-    border-bottom: 1px solid #eee;
-  }
-  .bom-item .bom-body { padding: .5rem .6rem; }
-  .bom-item .bom-name { font-weight: bold; color: #111; margin-bottom: .2rem; }
-  .bom-item .bom-spec { color: #555; margin-bottom: .3rem; }
-  .bom-item .bom-numbers { display: flex; justify-content: space-between;
-                            font-variant-numeric: tabular-nums; color: #333;
-                            border-top: 1px solid #eee; padding-top: .3rem; margin-top: .3rem; }
-  .bom-item .bom-link { display: block; margin-top: .4rem; font-size: .78rem;
-                        text-align: center; background: #e8523a; color: #fff;
-                        padding: 3px 6px; border-radius: 3px; border: none; }
-  .bom-item .bom-link:hover { background: #c43c27; color: #fff; border: none; }
-  .bom-item .bom-nolink { display: block; margin-top: .4rem; font-size: .78rem;
-                          text-align: center; color: #999; padding: 3px 6px; }
-
-  .bom-total { font-size: .95rem; margin-bottom: 2rem; }
-  .bom-total strong { font-size: 1.05rem; }
-
-  /* Algorithm blocks */
-  .algo { background: #f8f8f0; border-left: 3px solid #aaa;
-          padding: .6rem 1rem; margin: .8rem 0 1rem; font-size: .95rem; }
-  .algo h3 { margin: 0 0 .4rem; font-size: .88rem; font-style: normal;
-             font-weight: bold; color: #333; text-transform: uppercase; letter-spacing: .04em; }
-  .algo ol, .algo ul { margin: 0; padding-left: 1.3rem; }
-  .algo li { margin: .2rem 0; line-height: 1.5; }
-
-  /* Spec grid for angular speed */
-  .spec-row { display: flex; gap: 1.5rem; margin: .8rem 0 1.2rem; flex-wrap: wrap; }
-  .spec-box { border: 1px solid #ddd; border-radius: 3px; padding: .5rem .9rem;
-              text-align: center; min-width: 130px; background: #fff; }
-  .spec-box .sv { font-size: 1.4rem; font-weight: bold; color: #111; display: block; }
-  .spec-box .sk { font-size: .75rem; color: #777; font-style: italic; display: block; }
-
-  ul.refs li { margin: .55rem 0; }
-  ul.risks li { margin: .5rem 0; }
+  p.note { font-size: .88rem; color: #666; margin-top: .5rem; }
 </style>
 </head>
 <body>
-<article>
-  <h1>Drone Video Relay Add-On with Beam-Tracking Antenna</h1>
-  <div class="subtitle">2026-05-23 &middot; drone-relay-beam-tracking</div>
+  <header>
+    <h1>Drone Video Relay Add-On with Beam-Tracking Antenna</h1>
+    <span class="slug">drone-relay-beam-tracking</span>
+    <span class="date">2026-05-23</span>
+  </header>
 
-  <h2>Overview</h2>
-  <p>
-    A lightweight add-on module for a relay drone that receives FPV video at <strong>5.8 GHz</strong>
-    and retransmits it at <strong>1.3 GHz</strong> to a ground station up to 1 km away.
-    The relay drone hovers 100–300 m above the FPV drone. The key capability is
-    <strong>RSSI-based beam tracking</strong>: a PTZ-mounted patch antenna actively steers toward
-    the FPV drone below, maximising received signal strength without GPS and without any
-    modification to the FPV drone.
-  </p>
-  <p>
-    Antenna diversity is maintained throughout: an omnidirectional lollypop antenna stays active
-    at all times as a fallback, switching automatically during acquisition scans and signal-loss events.
-    The patch antenna is the primary receiver once lock is achieved.
-  </p>
+  <div class="grid">
 
-  <h2>Key Decisions</h2>
-  <table>
-    <thead><tr><th>Decision</th><th>Rationale</th></tr></thead>
-    <tbody>
-      <tr><td>RX at 5.8 GHz</td><td>Matches existing FPV drone VTX — no modification to FPV drone required</td></tr>
-      <tr><td>TX at 1.3 GHz</td><td>Better ground penetration and range for the downlink to the pilot</td></tr>
-      <tr><td>No GPS (hard constraint)</td><td>Design must be self-contained; no dependency on FPV drone avionics</td></tr>
-      <tr><td>RSSI hill-climbing</td><td>No external position data needed; tracks signal gradient directly</td></tr>
-      <tr><td>Pan: 270° servo (KST DS215MG)</td><td>Best weight/range tradeoff; covers ±135° yaw excursion of relay drone</td></tr>
-      <tr><td>Tilt: 180° servo, centre = –45°</td><td>Covers 0° to –90° — full downward cone from relay above FPV drone</td></tr>
-      <tr><td>ESP32 MCU</td><td>ADC for RSSI, I2C for IMU, PWM for servos; ~3 g, ~$5</td></tr>
-      <tr><td>MPU-6050 IMU</td><td>Compensates relay drone attitude (yaw/pitch) in real time</td></tr>
-      <tr><td>Lollypop as fallback</td><td>Maintains video signal during acquisition scan and loss recovery</td></tr>
-    </tbody>
-  </table>
+    <!-- OVERVIEW -->
+    <div class="card col-12">
+      <h2>Overview</h2>
+      <div class="overview">
+        A lightweight add-on module for a relay drone that receives FPV video at <strong>5.8 GHz</strong>
+        and retransmits it at <strong>1.3 GHz</strong> to a ground station. The relay drone hovers
+        100–300 m above the FPV drone; FPV range up to 1 km. The key capability is
+        <strong>RSSI-based beam tracking</strong>: a PTZ-mounted patch antenna actively steers
+        toward the FPV drone below, without GPS and without any modification to the FPV drone.
+        <ul>
+          <li><strong>Antenna diversity:</strong> lollypop omni (always on) + steered patch (primary when locked)</li>
+          <li><strong>No GPS:</strong> hard design constraint — tracking is self-contained via RSSI gradient</li>
+          <li><strong>Target weight:</strong> ~141 g total add-on (PTZ sub-assembly ~46 g, ~$33)</li>
+        </ul>
+      </div>
+    </div>
 
-  <h2>Tracking Algorithm</h2>
+    <!-- TRACKING ALGORITHM -->
+    <div class="card col-8">
+      <h2>Tracking Algorithm</h2>
 
-  <div class="algo">
-    <h3>Phase 1 — Acquisition (scan)</h3>
-    <ol>
-      <li>Lollypop omni is active; establish baseline RSSI.</li>
-      <li>Pan servo sweeps 270° in 10° steps (~28 positions). Hold 30 ms per step for VRX AGC to settle. Record RSSI.</li>
-      <li>Identify peak RSSI azimuth → fine sweep ±20° around it in 2° steps.</li>
-      <li>Tilt sweep: start at –15°, probe ±10° in 2° steps to find peak elevation.</li>
-      <li>Lock onto peak (azimuth, elevation) in world frame. Switch RX to patch. Total time: ~3–5 s.</li>
-    </ol>
+      <div class="algo-block">
+        <h3>Phase 1 — Acquisition (scan)</h3>
+        <ol>
+          <li>Lollypop omni active; establish baseline RSSI.</li>
+          <li>Pan servo sweeps 270° in 10° steps (~28 positions). Hold 30 ms/step for VRX AGC to settle.</li>
+          <li>Find peak RSSI azimuth → fine sweep ±20° in 2° steps.</li>
+          <li>Tilt sweep: start at –15°, probe ±10° in 2° steps.</li>
+          <li>Lock onto peak; switch RX to patch. Total: ~3–5 s.</li>
+        </ol>
+      </div>
+
+      <div class="algo-block">
+        <h3>Phase 2 — Track (dither hill-climbing, 100 ms loop)</h3>
+        <ol>
+          <li>Sample RSSI at current position; rolling 5-sample average to reduce noise.</li>
+          <li><strong>Pan:</strong> probe +3° and –3°; move toward higher RSSI; hold if neither improves.</li>
+          <li><strong>Tilt:</strong> probe +2° and –2°; same logic.</li>
+          <li>Apply IMU compensation: servo_cmd = world_target − drone_yaw / pitch.</li>
+        </ol>
+      </div>
+
+      <div class="algo-block">
+        <h3>Phase 3 — Loss recovery</h3>
+        <ol>
+          <li>RSSI below threshold for &gt;500 ms → switch RX to lollypop (signal maintained).</li>
+          <li>Trigger new acquisition scan from current position.</li>
+          <li>On re-lock, switch RX to patch; resume tracking.</li>
+        </ol>
+      </div>
+
+      <div class="algo-block">
+        <h3>IMU Attitude Compensation</h3>
+        <ul>
+          <li>MPU-6050 reads relay drone yaw, pitch, roll at 100 Hz via I2C.</li>
+          <li>Pan: world_azimuth − drone_yaw → servo command.</li>
+          <li>Tilt: world_elevation − drone_pitch → servo command.</li>
+          <li>Keeps patch on target as relay drone drifts, rotates, or responds to wind.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- KEY DECISIONS -->
+    <div class="card col-4">
+      <h2>Key Decisions</h2>
+      <table>
+        <thead><tr><th>Decision</th><th>Rationale</th></tr></thead>
+        <tbody>
+          <tr><td>RX: 5.8 GHz</td><td>Matches FPV drone VTX; no mods needed</td></tr>
+          <tr><td>TX: 1.3 GHz</td><td>Better range &amp; penetration for ground downlink</td></tr>
+          <tr><td>No GPS</td><td>Hard constraint; self-contained design</td></tr>
+          <tr><td>RSSI hill-climbing</td><td>No external position data needed</td></tr>
+          <tr><td>Pan: 270° servo</td><td>Covers ±135° relay drone yaw</td></tr>
+          <tr><td>Tilt centre = –45°</td><td>Covers 0° to –90° full downward cone</td></tr>
+          <tr><td>ESP32 MCU</td><td>ADC + I2C + PWM, 3 g, ~$5</td></tr>
+          <tr><td>MPU-6050 IMU</td><td>Relay drone attitude compensation</td></tr>
+          <tr><td>Lollypop fallback</td><td>Maintains video during scan &amp; loss recovery</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ANGULAR SPEED -->
+    <div class="card col-4">
+      <h2>Angular Speed</h2>
+      <div class="spec-grid">
+        <div class="spec-item">
+          <div class="label">Servo (loaded)</div>
+          <div class="value">~350°/s</div>
+          <div class="sub">KST DS215MG @ 6V</div>
+        </div>
+        <div class="spec-item">
+          <div class="label">Required @ 1 km</div>
+          <div class="value">~2°/s</div>
+          <div class="sub">FPV at 120 km/h</div>
+        </div>
+        <div class="spec-item">
+          <div class="label">Required @ 50 m</div>
+          <div class="value">~38°/s</div>
+          <div class="sub">closest approach</div>
+        </div>
+        <div class="spec-item">
+          <div class="label">Speed margin</div>
+          <div class="value" style="color:#2a7a52;">9×</div>
+          <div class="sub">at closest range</div>
+        </div>
+      </div>
+      <p class="note">Speed is not the constraint — RSSI noise and VRX AGC latency are. Validate your VRX's RSSI pin on a scope first.</p>
+    </div>
+
+    <!-- IMPLEMENTATION FLOW -->
+    <div class="card col-8">
+      <h2>Implementation Flow</h2>
+
+      <div class="step">
+        <div class="step-head">
+          <span class="step-num">1</span>
+          <span class="step-title">Hardware assembly — PTZ bracket &amp; servo mount</span>
+          <span class="pill s">S</span>
+        </div>
+        <div>3D-print bracket in PETG; mount DS215MG (pan) and MG90S (tilt); attach 5.8 GHz patch to tilt arm.</div>
+        <div class="step-meta"><span class="label">Unknowns:</span> Vibration coupling from rotors; rubber damping mounts may be needed.</div>
+        <div class="step-meta"><span class="label">Limits:</span> Pan capped at 270°; relay drone yaw &gt;135° exceeds servo range.</div>
+      </div>
+
+      <div class="step">
+        <div class="step-head">
+          <span class="step-num">2</span>
+          <span class="step-title">ESP32 firmware — RSSI ADC + servo PWM</span>
+          <span class="pill m">M</span>
+        </div>
+        <div>Read RSSI from VRX analog pin via ESP32 ADC (12-bit). Drive pan/tilt via PWM. Validate RSSI linearity.</div>
+        <div class="step-meta"><span class="label">Unknowns:</span> RSSI pin behaviour varies by VRX module — bench-test first.</div>
+        <div class="step-meta"><span class="label">Limits:</span> ESP32 ADC non-linearity near rails; voltage divider to keep RSSI in 0.1–3.1 V.</div>
+      </div>
+
+      <div class="step">
+        <div class="step-head">
+          <span class="step-num">3</span>
+          <span class="step-title">IMU integration — MPU-6050 attitude correction</span>
+          <span class="pill m">M</span>
+        </div>
+        <div>Mount MPU-6050 rigidly to drone frame (not PTZ). Read yaw/pitch via I2C; subtract drone attitude from servo commands.</div>
+        <div class="step-meta"><span class="label">Unknowns:</span> Gyro yaw drift ~0.5°/min without magnetometer; acceptable for typical flights.</div>
+        <div class="step-meta"><span class="label">Limits:</span> Motor/ESC magnetic interference may corrupt magnetometer if added later.</div>
+      </div>
+
+      <div class="step">
+        <div class="step-head">
+          <span class="step-num">4</span>
+          <span class="step-title">Acquisition algorithm — coarse + fine scan</span>
+          <span class="pill m">M</span>
+        </div>
+        <div>270° coarse pan sweep, fine ±20° sweep, tilt sweep. Output: locked (azimuth, elevation) in world frame.</div>
+        <div class="step-meta"><span class="label">Unknowns:</span> Multipath can create secondary peaks; use peak-width as confidence score.</div>
+        <div class="step-meta"><span class="label">Limits:</span> Acquisition takes 3–5 s; video relies on lollypop fallback during scan.</div>
+      </div>
+
+      <div class="step">
+        <div class="step-head">
+          <span class="step-num">5</span>
+          <span class="step-title">Track loop — dither hill-climbing</span>
+          <span class="pill m">M</span>
+        </div>
+        <div>100 ms control loop: dither pan ±3°, tilt ±2°, move toward RSSI gradient. Rolling 5-sample average.</div>
+        <div class="step-meta"><span class="label">Unknowns:</span> Optimal dither step size depends on patch beamwidth — tune in field.</div>
+        <div class="step-meta"><span class="label">Limits:</span> If VRX AGC settles &gt;50 ms, effective loop rate must be reduced.</div>
+      </div>
+
+      <div class="step">
+        <div class="step-head">
+          <span class="step-num">6</span>
+          <span class="step-title">Loss recovery + antenna switching</span>
+          <span class="pill s">S</span>
+        </div>
+        <div>RSSI threshold detection; switch RX to lollypop on loss via RF switch; re-trigger acquisition scan.</div>
+        <div class="step-meta"><span class="label">Limits:</span> Binary switching only — video may drop 1–2 frames per switch.</div>
+      </div>
+
+      <div class="step">
+        <div class="step-head">
+          <span class="step-num">7</span>
+          <span class="step-title">Field tuning — thresholds, dither size, noise floor</span>
+          <span class="pill l">L</span>
+        </div>
+        <div>Fly at various ranges and angles. Tune RSSI threshold, dither step, scan speed, AGC settle delay. Log RSSI + servo positions.</div>
+        <div class="step-meta"><span class="label">Unknowns:</span> Real-world multipath, prop wash, EMI from 1.3 GHz VTX to RSSI circuit.</div>
+        <div class="step-meta"><span class="label">Limits:</span> RSSI-only tracking cannot distinguish multipath from true signal; environment-dependent.</div>
+      </div>
+    </div>
+
+    <!-- BOM -->
+    <div class="card col-12">
+      <h2>Bill of Materials — PTZ Add-On</h2>
+      <div class="bom-grid">
+
+        <div class="bom-item">
+          <img src="https://cdn.shopify.com/s/files/1/0570/1766/3541/files/01_b71d4ec0-ec14-47f4-923a-62f133b69b2b_1800x1800.jpg" alt="KST DS215MG" onerror="this.src='';this.style.display='none'">
+          <div class="bom-body">
+            <div class="bom-name">KST DS215MG</div>
+            <div class="bom-spec">Pan servo, 270°, metal gear</div>
+            <div class="bom-nums"><span>15 g</span><span>~$18</span></div>
+            <a class="bom-link" href="https://www.aliexpress.com/item/3256805566511727.html" target="_blank">AliExpress →</a>
+          </div>
+        </div>
+
+        <div class="bom-item">
+          <img src="https://cdn-shop.adafruit.com/970x728/1143-08.jpg" alt="MG90S Servo" onerror="this.src='';this.style.display='none'">
+          <div class="bom-body">
+            <div class="bom-name">MG90S Servo</div>
+            <div class="bom-spec">Tilt servo, 180°, metal gear</div>
+            <div class="bom-nums"><span>9 g</span><span>~$3</span></div>
+            <a class="bom-link" href="https://www.aliexpress.com/item/1005005270330201.html" target="_blank">AliExpress →</a>
+          </div>
+        </div>
+
+        <div class="bom-item">
+          <img src="https://protosupplies.com/wp-content/uploads/2018/04/2-Axis-Pan-and-Tilt-Mount.jpg" alt="Pan-Tilt Bracket" onerror="this.src='';this.style.display='none'">
+          <div class="bom-body">
+            <div class="bom-name">Pan-Tilt Bracket</div>
+            <div class="bom-spec">2-axis servo mount</div>
+            <div class="bom-nums"><span>12 g</span><span>—</span></div>
+            <a class="bom-link" href="https://www.aliexpress.com/item/32918477641.html" target="_blank">AliExpress →</a>
+          </div>
+        </div>
+
+        <div class="bom-item">
+          <img src="https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32/_images/esp32-devkitc-v4-functional-overview.png" alt="ESP32 DevKit" onerror="this.src='';this.style.display='none'">
+          <div class="bom-body">
+            <div class="bom-name">ESP32 DevKit</div>
+            <div class="bom-spec">MCU — ADC, I2C, PWM</div>
+            <div class="bom-nums"><span>3 g</span><span>~$5</span></div>
+            <a class="bom-link" href="https://www.aliexpress.com/item/32806450471.html" target="_blank">AliExpress →</a>
+          </div>
+        </div>
+
+        <div class="bom-item">
+          <img src="https://protosupplies.com/wp-content/uploads/2019/03/MPU-6050-Accel-and-Gyro-Module.jpg" alt="MPU-6050" onerror="this.src='';this.style.display='none'">
+          <div class="bom-body">
+            <div class="bom-name">MPU-6050 GY-521</div>
+            <div class="bom-spec">IMU — gyro + accel, I2C</div>
+            <div class="bom-nums"><span>2 g</span><span>~$2</span></div>
+            <a class="bom-link" href="https://www.aliexpress.com/item/32340949017.html" target="_blank">AliExpress →</a>
+          </div>
+        </div>
+
+        <div class="bom-item">
+          <div class="bom-noimg">SKY13414-485LF<br>SP4T RF Switch<br>(bare IC)</div>
+          <div class="bom-body">
+            <div class="bom-name">RF Antenna Switch</div>
+            <div class="bom-spec">0.1–6 GHz, reflow solder</div>
+            <div class="bom-nums"><span>1 g</span><span>~$3</span></div>
+            <a class="bom-link" href="https://www.aliexpress.com/w/wholesale-SKY13414.html" target="_blank">AliExpress →</a>
+          </div>
+        </div>
+
+        <div class="bom-item">
+          <div class="bom-noimg">Jumper wires<br>JST connectors<br>heat-shrink</div>
+          <div class="bom-body">
+            <div class="bom-name">Wiring / Connectors</div>
+            <div class="bom-spec">Jumper wires, JST, heat-shrink</div>
+            <div class="bom-nums"><span>4 g</span><span>~$2</span></div>
+            <div class="bom-nolink">generic</div>
+          </div>
+        </div>
+
+      </div>
+      <p class="bom-total"><strong>PTZ sub-total: ~46 g, ~$33.</strong> Full add-on (PTZ + relay electronics + antennas): ~141 g.</p>
+    </div>
+
+    <!-- RISKS -->
+    <div class="card col-6" style="grid-column: span 6;">
+      <h2>Risks &amp; Open Questions</h2>
+      <ul class="risks">
+        <li><strong>RSSI noise:</strong> multipath creates false peaks; use peak-width confidence scoring during acquisition</li>
+        <li><strong>Pan hard limit:</strong> 270° covers ±135° yaw; relay drone spin beyond this loses tracking</li>
+        <li><strong>IMU yaw drift:</strong> ~0.5°/min without magnetometer; fine for typical flights</li>
+        <li><strong>Near-vertical geometry:</strong> FPV directly below relay pushes tilt to –90°; lollypop fallback handles this</li>
+        <li><strong>EMI from 1.3 GHz VTX:</strong> shielding and physical separation of RSSI circuit required</li>
+        <li><strong>VRX AGC latency:</strong> if &gt;50 ms, tracking lags — validate on bench before tuning</li>
+        <li><strong>Vibration:</strong> rubber damping mounts recommended for IMU and patch bracket</li>
+      </ul>
+    </div>
+
+    <!-- REFERENCES -->
+    <div class="card col-6" style="grid-column: span 6;">
+      <h2>References</h2>
+      <ul class="refs">
+        <li><a href="https://oscarliang.com/1-3ghz-5-8ghz-relay/">1.2–1.3 GHz to 5.8 GHz Relay — Oscar Liang</a> — relay concept, ~1–2 ms latency, 20 km+ range documented</li>
+        <li><a href="https://www.mdpi.com/2226-4310/10/4/323">Onboard Antenna Pointing for Relay UAV — MDPI Aerospace</a> — academic paper on airborne relay antenna pointing control</li>
+        <li><a href="https://ardupilot.org/antennatracker/">ArduPilot AntennaTracker</a> — open-source MAVLink-based pan/tilt tracker; reference for servo geometry math</li>
+        <li><a href="https://github.com/SamuelBrucksch/open360tracker">open360tracker — GitHub</a> — 360° antenna tracker, multi-protocol, mature reference implementation</li>
+        <li><a href="https://www.mdpi.com/1424-8220/21/16/5662">UAV Tracking Antenna Review — MDPI Sensors</a> — survey of beam steering methods</li>
+        <li><a href="https://xingkaitech.com/automatic-antenna-tracking-ptz-system-for-vtol-fix-wing-uav-airborne-aviation-tracking-antennas-for-long-range-communications/">XK-FT300 Airborne PTZ — Xingkai Tech</a> — GPS-dependent commercial system; shows approach replaced here</li>
+        <li><a href="https://github.com/OpenIPC/wiki/blob/master/en/fpv.md">OpenIPC FPV Wiki</a> — digital FPV with native MAVLink; relevant if GPS constraint is lifted</li>
+      </ul>
+    </div>
+
   </div>
-
-  <div class="algo">
-    <h3>Phase 2 — Track (dither hill-climbing, 100 ms loop)</h3>
-    <ol>
-      <li>Sample RSSI at current position; maintain rolling 5-sample average to reduce noise.</li>
-      <li><strong>Pan:</strong> probe +3° and –3°; move toward higher RSSI; hold if neither improves.</li>
-      <li><strong>Tilt:</strong> probe +2° and –2°; same logic.</li>
-      <li>Apply IMU compensation every iteration: servo_cmd = world_target − drone_yaw / drone_pitch.</li>
-    </ol>
-  </div>
-
-  <div class="algo">
-    <h3>Phase 3 — Loss recovery</h3>
-    <ol>
-      <li>RSSI below threshold for &gt;500 ms → switch RX back to lollypop (signal maintained).</li>
-      <li>Trigger new acquisition scan from current servo position outward.</li>
-      <li>On re-lock, switch RX to patch and resume tracking.</li>
-    </ol>
-  </div>
-
-  <div class="algo">
-    <h3>IMU Attitude Compensation</h3>
-    <ul>
-      <li>MPU-6050 reads relay drone yaw, pitch, roll at 100 Hz via I2C.</li>
-      <li>Pan servo: world_azimuth − drone_yaw → servo command.</li>
-      <li>Tilt servo: world_elevation − drone_pitch → servo command.</li>
-      <li>Keeps patch on target even as relay drone drifts, rotates, or responds to wind.</li>
-    </ul>
-  </div>
-
-  <h2>Angular Speed</h2>
-  <p>The KST DS215MG servo reaches approximately 700°/s unloaded; a conservative 350°/s under load. Required tracking rates are far below this ceiling:</p>
-  <div class="spec-row">
-    <div class="spec-box"><span class="sv">~350°/s</span><span class="sk">servo (loaded)</span></div>
-    <div class="spec-box"><span class="sv">~2°/s</span><span class="sk">needed @ 1 km</span></div>
-    <div class="spec-box"><span class="sv">~38°/s</span><span class="sk">needed @ 50 m</span></div>
-    <div class="spec-box"><span class="sv">9×</span><span class="sk">speed margin</span></div>
-  </div>
-  <p>Speed is not the limiting factor. RSSI noise and VRX AGC settling time (typically 20–80 ms) determine tracking responsiveness. Validate your specific VRX module's RSSI pin on a scope before committing to a loop rate.</p>
-
-  <h2>Implementation Flow</h2>
-  <ol class="steps">
-    <li>
-      <strong>Hardware assembly — PTZ bracket &amp; servo mounting</strong>
-      <span class="complexity">small</span>
-      <p>3D-print bracket in PETG; mount DS215MG (pan axis) and MG90S (tilt axis); attach 5.8 GHz patch to tilt arm.
-      <span class="deps">— no dependencies</span></p>
-      <span class="sidenote"><span class="label">Unknown unknowns.</span> Vibration coupling from rotors into patch; rubber damping mounts may be needed.</span>
-      <span class="sidenote"><span class="label">Limitations.</span> Pan hard-limited to 270°; relay drone yaw &gt;135° from centre exceeds servo range.</span>
-    </li>
-    <li>
-      <strong>ESP32 firmware — RSSI ADC + servo PWM</strong>
-      <span class="complexity">medium</span>
-      <p>Read RSSI from VRX analog pin via ESP32 ADC (12-bit). Drive pan/tilt via PWM. Validate RSSI linearity across signal levels.
-      <span class="deps">— depends on step 1</span></p>
-      <span class="sidenote"><span class="label">Unknown unknowns.</span> RSSI pin behaviour varies by VRX module — bench-test your specific receiver first.</span>
-      <span class="sidenote"><span class="label">Limitations.</span> ESP32 ADC non-linearity near rails; add voltage divider to keep RSSI in 0.1–3.1 V range.</span>
-    </li>
-    <li>
-      <strong>IMU integration — MPU-6050 attitude correction</strong>
-      <span class="complexity">medium</span>
-      <p>Mount MPU-6050 rigidly to relay drone frame (not to the PTZ). Read yaw/pitch via I2C; apply complementary filter; subtract drone attitude from servo commands.
-      <span class="deps">— depends on step 2</span></p>
-      <span class="sidenote"><span class="label">Unknown unknowns.</span> Gyro yaw drifts ~0.5°/min without magnetometer; acceptable for typical FPV flight durations.</span>
-      <span class="sidenote"><span class="label">Limitations.</span> Magnetic interference from motors and ESCs may corrupt magnetometer readings if one is added later.</span>
-    </li>
-    <li>
-      <strong>Acquisition algorithm — coarse + fine scan</strong>
-      <span class="complexity">medium</span>
-      <p>270° coarse pan sweep, fine ±20° sweep, tilt sweep. Output: locked (azimuth, elevation) in world frame.
-      <span class="deps">— depends on steps 2 and 3</span></p>
-      <span class="sidenote"><span class="label">Unknown unknowns.</span> Multipath can create secondary RSSI peaks; use peak-width as a confidence score to reject false candidates.</span>
-      <span class="sidenote"><span class="label">Limitations.</span> Acquisition takes 3–5 s; video quality during scan relies on lollypop fallback.</span>
-    </li>
-    <li>
-      <strong>Track loop — dither hill-climbing</strong>
-      <span class="complexity">medium</span>
-      <p>100 ms control loop: dither pan ±3°, tilt ±2°, move toward RSSI gradient. Rolling 5-sample average for noise rejection.
-      <span class="deps">— depends on step 4</span></p>
-      <span class="sidenote"><span class="label">Unknown unknowns.</span> Optimal dither step size depends on patch beamwidth — tune in the field.</span>
-      <span class="sidenote"><span class="label">Limitations.</span> If VRX AGC settles slower than 50 ms, effective loop rate must be reduced.</span>
-    </li>
-    <li>
-      <strong>Loss recovery + antenna switching</strong>
-      <span class="complexity">small</span>
-      <p>RSSI threshold detection; switch RX to lollypop on loss via RF switch; re-trigger acquisition.
-      <span class="deps">— depends on step 5</span></p>
-      <span class="sidenote"><span class="label">Limitations.</span> Binary switching only — no true diversity combining. Video may drop 1–2 frames on each antenna switch.</span>
-    </li>
-    <li>
-      <strong>Field tuning — thresholds, noise floor, dither size</strong>
-      <span class="complexity">large</span>
-      <p>Fly FPV drone at various ranges and angles. Tune RSSI loss threshold, dither step size, scan speed, AGC settle delay. Log RSSI and servo positions for analysis.
-      <span class="deps">— depends on all prior steps</span></p>
-      <span class="sidenote"><span class="label">Unknown unknowns.</span> Real-world multipath, prop wash on relay drone, EMI from 1.3 GHz VTX to RSSI circuit — environment-dependent.</span>
-      <span class="sidenote"><span class="label">Limitations.</span> RSSI-only tracking cannot distinguish multipath from the true signal; some false-tracking in cluttered environments is expected.</span>
-    </li>
-  </ol>
-
-  <h2>Bill of Materials — PTZ Add-On</h2>
-
-  <div class="bom-grid">
-
-    <div class="bom-item">
-      <img src="https://cdn.shopify.com/s/files/1/0570/1766/3541/files/01_b71d4ec0-ec14-47f4-923a-62f133b69b2b_1800x1800.jpg" alt="KST DS215MG" onerror="this.style.display='none'">
-      <div class="bom-body">
-        <div class="bom-name">KST DS215MG</div>
-        <div class="bom-spec">Pan servo, 270°, metal gear</div>
-        <div class="bom-numbers"><span>15 g</span><span>~$18</span></div>
-        <a class="bom-link" href="https://www.aliexpress.com/item/3256805566511727.html" target="_blank">AliExpress →</a>
-      </div>
-    </div>
-
-    <div class="bom-item">
-      <img src="https://cdn-shop.adafruit.com/970x728/1143-08.jpg" alt="MG90S Servo" onerror="this.style.display='none'">
-      <div class="bom-body">
-        <div class="bom-name">MG90S Servo</div>
-        <div class="bom-spec">Tilt servo, 180°, metal gear, 9 g</div>
-        <div class="bom-numbers"><span>9 g</span><span>~$3</span></div>
-        <a class="bom-link" href="https://www.aliexpress.com/item/1005005270330201.html" target="_blank">AliExpress →</a>
-      </div>
-    </div>
-
-    <div class="bom-item">
-      <img src="https://protosupplies.com/wp-content/uploads/2018/04/2-Axis-Pan-and-Tilt-Mount.jpg" alt="Pan-Tilt Bracket" onerror="this.style.display='none'">
-      <div class="bom-body">
-        <div class="bom-name">Pan-Tilt Bracket</div>
-        <div class="bom-spec">2-axis servo mount, 3D-print PETG</div>
-        <div class="bom-numbers"><span>12 g</span><span>—</span></div>
-        <a class="bom-link" href="https://www.aliexpress.com/item/32918477641.html" target="_blank">AliExpress →</a>
-      </div>
-    </div>
-
-    <div class="bom-item">
-      <img src="https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32/_images/esp32-devkitc-v4-functional-overview.png" alt="ESP32 DevKit" onerror="this.style.display='none'">
-      <div class="bom-body">
-        <div class="bom-name">ESP32 DevKit</div>
-        <div class="bom-spec">MCU — ADC, I2C, PWM</div>
-        <div class="bom-numbers"><span>3 g</span><span>~$5</span></div>
-        <a class="bom-link" href="https://www.aliexpress.com/item/32806450471.html" target="_blank">AliExpress →</a>
-      </div>
-    </div>
-
-    <div class="bom-item">
-      <img src="https://protosupplies.com/wp-content/uploads/2019/03/MPU-6050-Accel-and-Gyro-Module.jpg" alt="MPU-6050 GY-521" onerror="this.style.display='none'">
-      <div class="bom-body">
-        <div class="bom-name">MPU-6050 GY-521</div>
-        <div class="bom-spec">IMU — gyro + accel, I2C</div>
-        <div class="bom-numbers"><span>2 g</span><span>~$2</span></div>
-        <a class="bom-link" href="https://www.aliexpress.com/item/32340949017.html" target="_blank">AliExpress →</a>
-      </div>
-    </div>
-
-    <div class="bom-item">
-      <div style="height:120px;display:flex;align-items:center;justify-content:center;background:#f8f8f0;font-size:.75rem;color:#999;border-bottom:1px solid #eee;padding:8px;text-align:center;">RF Antenna Switch<br>SKY13414-485LF<br>(bare IC, reflow soldering)</div>
-      <div class="bom-body">
-        <div class="bom-name">RF Switch</div>
-        <div class="bom-spec">SKY13414 SP4T, 0.1–6 GHz</div>
-        <div class="bom-numbers"><span>1 g</span><span>~$3</span></div>
-        <a class="bom-link" href="https://www.aliexpress.com/w/wholesale-SKY13414.html" target="_blank">AliExpress →</a>
-      </div>
-    </div>
-
-    <div class="bom-item">
-      <div style="height:120px;display:flex;align-items:center;justify-content:center;background:#f8f8f0;font-size:.75rem;color:#999;border-bottom:1px solid #eee;padding:8px;text-align:center;">Jumper wires,<br>JST connectors,<br>heat-shrink</div>
-      <div class="bom-body">
-        <div class="bom-name">Wiring / Connectors</div>
-        <div class="bom-spec">Jumper wires, JST, heat-shrink</div>
-        <div class="bom-numbers"><span>4 g</span><span>~$2</span></div>
-        <div class="bom-nolink">generic — any supplier</div>
-      </div>
-    </div>
-
-  </div>
-
-  <p class="bom-total"><strong>PTZ sub-assembly total: ~46 g, ~$33.</strong>
-  Full add-on including relay electronics and antennas: ~141 g.</p>
-
-  <h2>Risks &amp; Open Questions</h2>
-  <ul class="risks">
-    <li><strong>Analog RSSI noise.</strong> Multipath and fast fading can create false peaks. Use peak-width as a confidence score during acquisition; smooth the tracking loop with a rolling average.</li>
-    <li><strong>Pan range hard limit.</strong> 270° servo covers ±135° yaw. If the relay drone rotates more than this from the initial heading, the patch will lose track. The IMU can detect and flag this condition.</li>
-    <li><strong>IMU yaw drift.</strong> MPU-6050 gyro integration drifts ~0.5°/min without a magnetometer. Acceptable for typical 10–20 minute flights; add a magnetometer for long hover operations.</li>
-    <li><strong>Near-vertical geometry.</strong> FPV drone directly below relay (&lt;50 m lateral) pushes tilt toward –90° where patch gain degrades. Lollypop fallback handles this case.</li>
-    <li><strong>EMI from 1.3 GHz VTX.</strong> The transmitter and 5.8 GHz RX share the same platform. Physical separation and shielding of the RSSI circuit are essential.</li>
-    <li><strong>VRX AGC latency.</strong> If the receiver AGC settles slower than 50 ms, dither-based tracking will lag. Validate on a bench before tuning the control loop.</li>
-    <li><strong>Vibration.</strong> Rotor vibration couples into the IMU and the patch; rubber damping mounts recommended for both.</li>
-  </ul>
-
-  <h2>References</h2>
-  <ul class="refs">
-    <li><a href="https://oscarliang.com/1-3ghz-5-8ghz-relay/">1.2–1.3 GHz to 5.8 GHz Wireless Relay — Oscar Liang.</a> Relay concept and hardware; ~1–2 ms latency, 20 km+ range documented.</li>
-    <li><a href="https://www.mdpi.com/2226-4310/10/4/323">Onboard Antenna Pointing Control for Wireless Relay UAV — MDPI Aerospace.</a> Academic paper directly on airborne relay antenna pointing; the closest academic precedent found.</li>
-    <li><a href="https://ardupilot.org/antennatracker/">ArduPilot AntennaTracker.</a> Open-source MAVLink-based pan/tilt tracker firmware; reference for servo geometry math.</li>
-    <li><a href="https://github.com/SamuelBrucksch/open360tracker">open360tracker — GitHub.</a> Open-source 360° antenna tracker; multi-protocol telemetry, mature reference implementation.</li>
-    <li><a href="https://www.mdpi.com/1424-8220/21/16/5662">UAV Tracking Antenna Review — MDPI Sensors.</a> Survey of beam steering methods: phased array, mechanical PTZ, switched beam.</li>
-    <li><a href="https://xingkaitech.com/automatic-antenna-tracking-ptz-system-for-vtol-fix-wing-uav-airborne-aviation-tracking-antennas-for-long-range-communications/">XK-FT300 Airborne PTZ Tracker — Xingkai Tech.</a> Commercial GPS-dependent system — shows the approach replaced here by RSSI.</li>
-    <li><a href="https://github.com/OpenIPC/wiki/blob/master/en/fpv.md">OpenIPC FPV Wiki.</a> Digital FPV stack with native MAVLink telemetry — relevant if the no-GPS constraint is relaxed in future.</li>
-  </ul>
-
-</article>
 </body>
 </html>
