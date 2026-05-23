@@ -88,7 +88,7 @@ Do not fabricate citations. If a search turns up nothing useful, say so.
 
 ## Phase 4 — Summary artifact
 
-1. Show the user three HTML style options and let them pick:
+1. Read the three template files in the `templates/` folder of this repo. Show the user a one-line description of each and let them pick:
    - **Minimal** — clean prose, light/dark mode, readable anywhere
    - **Dashboard** — dark card layout, complexity pills, side-by-side panels
    - **Tufte** — generous whitespace, sidenotes for unknowns/limits, serif typography
