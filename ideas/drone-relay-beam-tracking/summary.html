@@ -5,86 +5,85 @@
 <title>Drone Video Relay Add-On with Beam-Tracking Antenna</title>
 <style>
   * { box-sizing: border-box; }
-  body { font: 14px/1.5 "et-book", Palatino, "Palatino Linotype", Georgia, serif;
-         margin: 0; background: #fffff8; color: #111; }
-  header { padding: 1.5rem 2rem 1rem; border-bottom: 1px solid #ccc;
+  body { font: 14px/1.5 ui-sans-serif, system-ui, -apple-system, sans-serif;
+         margin: 0; background: #0f1419; color: #d7e3eb; }
+  header { padding: 1.5rem 2rem 1rem; border-bottom: 1px solid #1f2a33;
            display: flex; align-items: baseline; gap: 1rem; flex-wrap: wrap; }
-  header h1 { margin: 0; font-size: 1.6rem; color: #111; font-weight: 400; font-style: italic; }
-  header .slug { color: #888; font-family: ui-monospace, monospace; font-size: .85rem; }
-  header .date { color: #aaa; margin-left: auto; font-size: .85rem; }
+  header h1 { margin: 0; font-size: 1.6rem; color: #fff; }
+  header .slug { color: #7a8d99; font-family: ui-monospace, monospace; font-size: .85rem; }
+  header .date { color: #5d6e7a; margin-left: auto; font-size: .85rem; }
 
   .grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 1rem; padding: 1.25rem 2rem 2rem; }
-  .card { background: #fff; border: 1px solid #ddd; border-radius: 6px; padding: 1rem 1.15rem; }
-  .card h2 { margin: 0 0 .65rem; font-size: .75rem; text-transform: uppercase; letter-spacing: .07em;
-             color: #888; font-weight: 600; font-style: normal; }
+  .card { background: #151c23; border: 1px solid #1f2a33; border-radius: 8px; padding: 1rem 1.15rem; }
+  .card h2 { margin: 0 0 .65rem; font-size: .8rem; text-transform: uppercase; letter-spacing: .06em;
+             color: #6d8492; font-weight: 600; }
   .col-12 { grid-column: span 12; }
   .col-8  { grid-column: span 8; }
   .col-4  { grid-column: span 4; }
-  @media (max-width: 880px) { .col-8, .col-4 { grid-column: span 12; } }
+  .col-6  { grid-column: span 6; }
+  @media (max-width: 880px) { .col-8, .col-4, .col-6 { grid-column: span 12; } }
 
-  .overview { font-size: 1.0rem; line-height: 1.6; color: #222; }
+  .overview { font-size: 1.05rem; line-height: 1.55; color: #e8f0f5; }
   .overview ul { margin: .5rem 0 0; padding-left: 1.3rem; }
-  .overview li { margin: .25rem 0; }
+  .overview li { margin: .3rem 0; }
 
   table { width: 100%; border-collapse: collapse; font-size: .9rem; }
-  th, td { padding: .45rem .6rem; text-align: left; border-bottom: 1px solid #e8e8e0; vertical-align: top; }
-  th { color: #888; font-weight: 400; font-style: italic; font-size: .85rem; border-bottom: 1px solid #bbb; }
+  th, td { padding: .5rem .7rem; text-align: left; border-bottom: 1px solid #1f2a33; vertical-align: top; }
+  th { color: #6d8492; font-weight: 600; font-size: .75rem; text-transform: uppercase; letter-spacing: .04em; }
 
-  .step { padding: .85rem 0; border-bottom: 1px dashed #ddd; }
+  .step { padding: .9rem 0; border-bottom: 1px dashed #1f2a33; }
   .step:last-child { border-bottom: 0; }
-  .step-head { display: flex; align-items: center; gap: .6rem; margin-bottom: .3rem; flex-wrap: wrap; }
-  .step-num { background: #f0ece0; color: #444; font-family: ui-monospace, monospace;
-              padding: 1px 7px; border-radius: 3px; font-size: .75rem; }
-  .step-title { font-weight: 600; color: #111; font-size: .95rem; }
+  .step-head { display: flex; align-items: center; gap: .6rem; margin-bottom: .35rem; flex-wrap: wrap; }
+  .step-num { background: #1f3a4d; color: #8ec5e8; font-family: ui-monospace, monospace;
+              padding: 1px 7px; border-radius: 4px; font-size: .75rem; }
+  .step-title { font-weight: 600; color: #fff; }
   .pill { font-size: .7rem; padding: 2px 8px; border-radius: 10px; font-family: ui-monospace, monospace; }
-  .pill.s  { background: #e6f5ee; color: #2a7a52; }
-  .pill.m  { background: #fdf3dc; color: #7a5a10; }
-  .pill.l  { background: #fde8d8; color: #7a3a10; }
-  .pill.xl { background: #fde0e0; color: #7a1010; }
-  .step-meta { margin-top: .3rem; font-size: .84rem; color: #666; }
-  .step-meta .label { color: #999; font-weight: 600; font-size: .78rem; text-transform: uppercase; letter-spacing: .04em; }
+  .pill.s  { background: #1a3a2e; color: #6ed5a8; }
+  .pill.m  { background: #3a341a; color: #d9c66e; }
+  .pill.l  { background: #3a2a1a; color: #e0a06e; }
+  .pill.xl { background: #3a1a1a; color: #e87070; }
+  .step-meta { margin-top: .35rem; font-size: .85rem; color: #94a8b5; }
+  .step-meta .label { color: #6d8492; font-weight: 600; }
 
-  .algo-block { background: #fafaf5; border: 1px solid #e8e8e0; border-radius: 4px;
-                padding: .7rem 1rem; margin: .5rem 0 .8rem; font-size: .9rem; }
-  .algo-block h3 { margin: 0 0 .35rem; font-size: .75rem; color: #1a4f7a; text-transform: uppercase;
-                   letter-spacing: .05em; font-weight: 600; font-style: normal; }
+  .algo-block { background: #0d1117; border: 1px solid #1f2a33; border-radius: 6px;
+                padding: .8rem 1rem; margin: .5rem 0 .8rem; font-size: .9rem; }
+  .algo-block h3 { margin: 0 0 .4rem; font-size: .8rem; color: #8ec5e8; text-transform: uppercase;
+                   letter-spacing: .05em; }
   .algo-block ol, .algo-block ul { margin: 0; padding-left: 1.2rem; }
-  .algo-block li { margin: .22rem 0; line-height: 1.5; }
+  .algo-block li { margin: .25rem 0; }
 
   .spec-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem; margin-top: .5rem; }
-  .spec-item { background: #fafaf5; border: 1px solid #e8e8e0; border-radius: 3px; padding: .45rem .7rem; }
-  .spec-item .label { font-size: .7rem; color: #888; text-transform: uppercase; letter-spacing: .05em; }
-  .spec-item .value { font-size: 1rem; color: #111; font-weight: 600; }
-  .spec-item .sub { font-size: .77rem; color: #999; }
+  .spec-item { background: #0d1117; border-radius: 5px; padding: .5rem .8rem; }
+  .spec-item .label { font-size: .72rem; color: #6d8492; text-transform: uppercase; letter-spacing: .05em; }
+  .spec-item .value { font-size: 1rem; color: #fff; font-weight: 600; }
+  .spec-item .sub { font-size: .78rem; color: #7a8d99; }
 
   /* BOM grid */
-  .bom-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: .9rem; margin-top: .6rem; }
-  .bom-item { border: 1px solid #ddd; border-radius: 4px; overflow: hidden; background: #fafaf5; font-size: .8rem; }
-  .bom-item img { width: 100%; height: 100px; object-fit: contain; background: #fff;
-                  padding: 6px; display: block; border-bottom: 1px solid #e8e8e0; }
-  .bom-item .bom-body { padding: .45rem .55rem; }
-  .bom-item .bom-name { font-weight: 700; color: #111; margin-bottom: .15rem; font-size: .82rem; }
-  .bom-item .bom-spec { color: #666; margin-bottom: .25rem; font-size: .76rem; }
-  .bom-item .bom-nums { display: flex; justify-content: space-between; color: #444;
-                        border-top: 1px solid #e8e8e0; padding-top: .25rem; margin-top: .25rem;
+  .bom-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: .9rem; margin-top: .6rem; }
+  .bom-item { border: 1px solid #1f2a33; border-radius: 6px; overflow: hidden; background: #0d1117; font-size: .8rem; }
+  .bom-item img { width: 100%; height: 110px; object-fit: contain; background: #151c23;
+                  padding: 6px; display: block; border-bottom: 1px solid #1f2a33; }
+  .bom-item .bom-body { padding: .5rem .6rem; }
+  .bom-item .bom-name { font-weight: 700; color: #fff; margin-bottom: .15rem; font-size: .83rem; }
+  .bom-item .bom-spec { color: #7a8d99; margin-bottom: .25rem; font-size: .77rem; }
+  .bom-item .bom-nums { display: flex; justify-content: space-between; color: #94a8b5;
+                        border-top: 1px solid #1f2a33; padding-top: .25rem; margin-top: .25rem;
                         font-size: .78rem; font-family: ui-monospace, monospace; }
-  .bom-item .bom-link { display: block; margin-top: .35rem; text-align: center;
+  .bom-item .bom-link { display: block; margin-top: .4rem; text-align: center;
                         background: #e8523a; color: #fff; padding: 3px 6px;
-                        border-radius: 3px; font-size: .73rem; text-decoration: none; border: none; }
+                        border-radius: 3px; font-size: .73rem; text-decoration: none; }
   .bom-item .bom-link:hover { background: #c43c27; }
-  .bom-item .bom-nolink { display: block; margin-top: .35rem; text-align: center;
-                           color: #bbb; font-size: .73rem; }
-  .bom-noimg { height: 100px; display: flex; align-items: center; justify-content: center;
-               background: #f5f5ee; border-bottom: 1px solid #e8e8e0;
-               font-size: .72rem; color: #bbb; text-align: center; padding: 8px; }
-  .bom-total { margin-top: .8rem; font-size: .92rem; color: #333; }
+  .bom-item .bom-nolink { display: block; margin-top: .4rem; text-align: center; color: #5d6e7a; font-size: .73rem; }
+  .bom-noimg { height: 110px; display: flex; align-items: center; justify-content: center;
+               background: #0d1117; border-bottom: 1px solid #1f2a33;
+               font-size: .72rem; color: #5d6e7a; text-align: center; padding: 8px; }
+  .bom-total { margin-top: .8rem; font-size: .92rem; color: #94a8b5; }
 
   ul.refs, ul.risks { margin: 0; padding-left: 1.1rem; }
-  ul.refs li, ul.risks li { margin: .4rem 0; }
-  a { color: #1a4f7a; text-decoration: none; border-bottom: 1px solid #c4d1dc; }
-  a:hover { border-bottom-color: #1a4f7a; }
+  ul.refs li, ul.risks li { margin: .35rem 0; }
+  a { color: #6ec1e8; }
 
-  p.note { font-size: .88rem; color: #666; margin-top: .5rem; }
+  p.note { font-size: .85rem; color: #94a8b5; margin-top: .6rem; }
 </style>
 </head>
 <body>
@@ -104,7 +103,7 @@
         and retransmits it at <strong>1.3 GHz</strong> to a ground station. The relay drone hovers
         100–300 m above the FPV drone; FPV range up to 1 km. The key capability is
         <strong>RSSI-based beam tracking</strong>: a PTZ-mounted patch antenna actively steers
-        toward the FPV drone below, without GPS and without any modification to the FPV drone.
+        toward the FPV drone below — no GPS, no modification to the FPV drone.
         <ul>
           <li><strong>Antenna diversity:</strong> lollypop omni (always on) + steered patch (primary when locked)</li>
           <li><strong>No GPS:</strong> hard design constraint — tracking is self-contained via RSSI gradient</li>
@@ -162,17 +161,17 @@
     <div class="card col-4">
       <h2>Key Decisions</h2>
       <table>
-        <thead><tr><th>Decision</th><th>Rationale</th></tr></thead>
+        <thead><tr><th>Decision</th><th>Why</th></tr></thead>
         <tbody>
           <tr><td>RX: 5.8 GHz</td><td>Matches FPV drone VTX; no mods needed</td></tr>
           <tr><td>TX: 1.3 GHz</td><td>Better range &amp; penetration for ground downlink</td></tr>
           <tr><td>No GPS</td><td>Hard constraint; self-contained design</td></tr>
           <tr><td>RSSI hill-climbing</td><td>No external position data needed</td></tr>
-          <tr><td>Pan: 270° servo</td><td>Covers ±135° relay drone yaw</td></tr>
+          <tr><td>Pan: 270° servo</td><td>Covers ±135° relay drone yaw excursion</td></tr>
           <tr><td>Tilt centre = –45°</td><td>Covers 0° to –90° full downward cone</td></tr>
           <tr><td>ESP32 MCU</td><td>ADC + I2C + PWM, 3 g, ~$5</td></tr>
           <tr><td>MPU-6050 IMU</td><td>Relay drone attitude compensation</td></tr>
-          <tr><td>Lollypop fallback</td><td>Maintains video during scan &amp; loss recovery</td></tr>
+          <tr><td>Lollypop fallback</td><td>Video maintained during scan &amp; loss recovery</td></tr>
         </tbody>
       </table>
     </div>
@@ -198,7 +197,7 @@
         </div>
         <div class="spec-item">
           <div class="label">Speed margin</div>
-          <div class="value" style="color:#2a7a52;">9×</div>
+          <div class="value" style="color:#6ed5a8;">9×</div>
           <div class="sub">at closest range</div>
         </div>
       </div>
@@ -216,8 +215,9 @@
           <span class="pill s">S</span>
         </div>
         <div>3D-print bracket in PETG; mount DS215MG (pan) and MG90S (tilt); attach 5.8 GHz patch to tilt arm.</div>
-        <div class="step-meta"><span class="label">Unknowns:</span> Vibration coupling from rotors; rubber damping mounts may be needed.</div>
-        <div class="step-meta"><span class="label">Limits:</span> Pan capped at 270°; relay drone yaw &gt;135° exceeds servo range.</div>
+        <div class="step-meta"><span class="label">Depends on:</span> Nothing</div>
+        <div class="step-meta"><span class="label">Unknowns:</span> Vibration coupling from rotors; rubber damping mounts may be needed</div>
+        <div class="step-meta"><span class="label">Limits:</span> Pan capped at 270°; relay drone yaw &gt;135° exceeds servo range</div>
       </div>
 
       <div class="step">
@@ -227,8 +227,9 @@
           <span class="pill m">M</span>
         </div>
         <div>Read RSSI from VRX analog pin via ESP32 ADC (12-bit). Drive pan/tilt via PWM. Validate RSSI linearity.</div>
-        <div class="step-meta"><span class="label">Unknowns:</span> RSSI pin behaviour varies by VRX module — bench-test first.</div>
-        <div class="step-meta"><span class="label">Limits:</span> ESP32 ADC non-linearity near rails; voltage divider to keep RSSI in 0.1–3.1 V.</div>
+        <div class="step-meta"><span class="label">Depends on:</span> Step 1</div>
+        <div class="step-meta"><span class="label">Unknowns:</span> RSSI pin behaviour varies by VRX module — bench-test first</div>
+        <div class="step-meta"><span class="label">Limits:</span> ESP32 ADC non-linearity near rails; voltage divider to keep RSSI in 0.1–3.1 V</div>
       </div>
 
       <div class="step">
@@ -238,8 +239,9 @@
           <span class="pill m">M</span>
         </div>
         <div>Mount MPU-6050 rigidly to drone frame (not PTZ). Read yaw/pitch via I2C; subtract drone attitude from servo commands.</div>
-        <div class="step-meta"><span class="label">Unknowns:</span> Gyro yaw drift ~0.5°/min without magnetometer; acceptable for typical flights.</div>
-        <div class="step-meta"><span class="label">Limits:</span> Motor/ESC magnetic interference may corrupt magnetometer if added later.</div>
+        <div class="step-meta"><span class="label">Depends on:</span> Step 2</div>
+        <div class="step-meta"><span class="label">Unknowns:</span> Gyro yaw drift ~0.5°/min without magnetometer; fine for typical flights</div>
+        <div class="step-meta"><span class="label">Limits:</span> Motor/ESC magnetic interference may corrupt magnetometer if added later</div>
       </div>
 
       <div class="step">
@@ -249,8 +251,9 @@
           <span class="pill m">M</span>
         </div>
         <div>270° coarse pan sweep, fine ±20° sweep, tilt sweep. Output: locked (azimuth, elevation) in world frame.</div>
-        <div class="step-meta"><span class="label">Unknowns:</span> Multipath can create secondary peaks; use peak-width as confidence score.</div>
-        <div class="step-meta"><span class="label">Limits:</span> Acquisition takes 3–5 s; video relies on lollypop fallback during scan.</div>
+        <div class="step-meta"><span class="label">Depends on:</span> Steps 2, 3</div>
+        <div class="step-meta"><span class="label">Unknowns:</span> Multipath can create secondary peaks; use peak-width as confidence score</div>
+        <div class="step-meta"><span class="label">Limits:</span> Acquisition takes 3–5 s; video relies on lollypop fallback during scan</div>
       </div>
 
       <div class="step">
@@ -260,8 +263,9 @@
           <span class="pill m">M</span>
         </div>
         <div>100 ms control loop: dither pan ±3°, tilt ±2°, move toward RSSI gradient. Rolling 5-sample average.</div>
-        <div class="step-meta"><span class="label">Unknowns:</span> Optimal dither step size depends on patch beamwidth — tune in field.</div>
-        <div class="step-meta"><span class="label">Limits:</span> If VRX AGC settles &gt;50 ms, effective loop rate must be reduced.</div>
+        <div class="step-meta"><span class="label">Depends on:</span> Step 4</div>
+        <div class="step-meta"><span class="label">Unknowns:</span> Optimal dither step size depends on patch beamwidth — tune in field</div>
+        <div class="step-meta"><span class="label">Limits:</span> If VRX AGC settles &gt;50 ms, effective loop rate must be reduced</div>
       </div>
 
       <div class="step">
@@ -271,7 +275,8 @@
           <span class="pill s">S</span>
         </div>
         <div>RSSI threshold detection; switch RX to lollypop on loss via RF switch; re-trigger acquisition scan.</div>
-        <div class="step-meta"><span class="label">Limits:</span> Binary switching only — video may drop 1–2 frames per switch.</div>
+        <div class="step-meta"><span class="label">Depends on:</span> Step 5</div>
+        <div class="step-meta"><span class="label">Limits:</span> Binary switching only — video may drop 1–2 frames per switch</div>
       </div>
 
       <div class="step">
@@ -281,8 +286,9 @@
           <span class="pill l">L</span>
         </div>
         <div>Fly at various ranges and angles. Tune RSSI threshold, dither step, scan speed, AGC settle delay. Log RSSI + servo positions.</div>
-        <div class="step-meta"><span class="label">Unknowns:</span> Real-world multipath, prop wash, EMI from 1.3 GHz VTX to RSSI circuit.</div>
-        <div class="step-meta"><span class="label">Limits:</span> RSSI-only tracking cannot distinguish multipath from true signal; environment-dependent.</div>
+        <div class="step-meta"><span class="label">Depends on:</span> Steps 1–6</div>
+        <div class="step-meta"><span class="label">Unknowns:</span> Real-world multipath, prop wash, EMI from 1.3 GHz VTX to RSSI circuit</div>
+        <div class="step-meta"><span class="label">Limits:</span> RSSI-only tracking cannot distinguish multipath from true signal; environment-dependent</div>
       </div>
     </div>
 
@@ -292,7 +298,7 @@
       <div class="bom-grid">
 
         <div class="bom-item">
-          <img src="https://cdn.shopify.com/s/files/1/0570/1766/3541/files/01_b71d4ec0-ec14-47f4-923a-62f133b69b2b_1800x1800.jpg" alt="KST DS215MG" onerror="this.src='';this.style.display='none'">
+          <img src="https://cdn.shopify.com/s/files/1/0570/1766/3541/files/01_b71d4ec0-ec14-47f4-923a-62f133b69b2b_1800x1800.jpg" alt="KST DS215MG" onerror="this.style.display='none'">
           <div class="bom-body">
             <div class="bom-name">KST DS215MG</div>
             <div class="bom-spec">Pan servo, 270°, metal gear</div>
@@ -302,7 +308,7 @@
         </div>
 
         <div class="bom-item">
-          <img src="https://cdn-shop.adafruit.com/970x728/1143-08.jpg" alt="MG90S Servo" onerror="this.src='';this.style.display='none'">
+          <img src="https://cdn-shop.adafruit.com/970x728/1143-08.jpg" alt="MG90S Servo" onerror="this.style.display='none'">
           <div class="bom-body">
             <div class="bom-name">MG90S Servo</div>
             <div class="bom-spec">Tilt servo, 180°, metal gear</div>
@@ -312,7 +318,7 @@
         </div>
 
         <div class="bom-item">
-          <img src="https://protosupplies.com/wp-content/uploads/2018/04/2-Axis-Pan-and-Tilt-Mount.jpg" alt="Pan-Tilt Bracket" onerror="this.src='';this.style.display='none'">
+          <img src="https://protosupplies.com/wp-content/uploads/2018/04/2-Axis-Pan-and-Tilt-Mount.jpg" alt="Pan-Tilt Bracket" onerror="this.style.display='none'">
           <div class="bom-body">
             <div class="bom-name">Pan-Tilt Bracket</div>
             <div class="bom-spec">2-axis servo mount</div>
@@ -322,7 +328,7 @@
         </div>
 
         <div class="bom-item">
-          <img src="https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32/_images/esp32-devkitc-v4-functional-overview.png" alt="ESP32 DevKit" onerror="this.src='';this.style.display='none'">
+          <img src="https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32/_images/esp32-devkitc-v4-functional-overview.png" alt="ESP32 DevKit" onerror="this.style.display='none'">
           <div class="bom-body">
             <div class="bom-name">ESP32 DevKit</div>
             <div class="bom-spec">MCU — ADC, I2C, PWM</div>
@@ -332,7 +338,7 @@
         </div>
 
         <div class="bom-item">
-          <img src="https://protosupplies.com/wp-content/uploads/2019/03/MPU-6050-Accel-and-Gyro-Module.jpg" alt="MPU-6050" onerror="this.src='';this.style.display='none'">
+          <img src="https://protosupplies.com/wp-content/uploads/2019/03/MPU-6050-Accel-and-Gyro-Module.jpg" alt="MPU-6050" onerror="this.style.display='none'">
           <div class="bom-body">
             <div class="bom-name">MPU-6050 GY-521</div>
             <div class="bom-spec">IMU — gyro + accel, I2C</div>
@@ -362,11 +368,11 @@
         </div>
 
       </div>
-      <p class="bom-total"><strong>PTZ sub-total: ~46 g, ~$33.</strong> Full add-on (PTZ + relay electronics + antennas): ~141 g.</p>
+      <p class="bom-total"><strong style="color:#d7e3eb;">PTZ sub-total: ~46 g, ~$33.</strong> Full add-on (PTZ + relay electronics + antennas): ~141 g.</p>
     </div>
 
     <!-- RISKS -->
-    <div class="card col-6" style="grid-column: span 6;">
+    <div class="card col-6">
       <h2>Risks &amp; Open Questions</h2>
       <ul class="risks">
         <li><strong>RSSI noise:</strong> multipath creates false peaks; use peak-width confidence scoring during acquisition</li>
@@ -374,13 +380,13 @@
         <li><strong>IMU yaw drift:</strong> ~0.5°/min without magnetometer; fine for typical flights</li>
         <li><strong>Near-vertical geometry:</strong> FPV directly below relay pushes tilt to –90°; lollypop fallback handles this</li>
         <li><strong>EMI from 1.3 GHz VTX:</strong> shielding and physical separation of RSSI circuit required</li>
-        <li><strong>VRX AGC latency:</strong> if &gt;50 ms, tracking lags — validate on bench before tuning</li>
+        <li><strong>VRX AGC latency:</strong> if &gt;50 ms, tracking lags — validate on bench before tuning loop</li>
         <li><strong>Vibration:</strong> rubber damping mounts recommended for IMU and patch bracket</li>
       </ul>
     </div>
 
     <!-- REFERENCES -->
-    <div class="card col-6" style="grid-column: span 6;">
+    <div class="card col-6">
       <h2>References</h2>
       <ul class="refs">
         <li><a href="https://oscarliang.com/1-3ghz-5-8ghz-relay/">1.2–1.3 GHz to 5.8 GHz Relay — Oscar Liang</a> — relay concept, ~1–2 ms latency, 20 km+ range documented</li>
@@ -388,7 +394,7 @@
         <li><a href="https://ardupilot.org/antennatracker/">ArduPilot AntennaTracker</a> — open-source MAVLink-based pan/tilt tracker; reference for servo geometry math</li>
         <li><a href="https://github.com/SamuelBrucksch/open360tracker">open360tracker — GitHub</a> — 360° antenna tracker, multi-protocol, mature reference implementation</li>
         <li><a href="https://www.mdpi.com/1424-8220/21/16/5662">UAV Tracking Antenna Review — MDPI Sensors</a> — survey of beam steering methods</li>
-        <li><a href="https://xingkaitech.com/automatic-antenna-tracking-ptz-system-for-vtol-fix-wing-uav-airborne-aviation-tracking-antennas-for-long-range-communications/">XK-FT300 Airborne PTZ — Xingkai Tech</a> — GPS-dependent commercial system; shows approach replaced here</li>
+        <li><a href="https://xingkaitech.com/automatic-antenna-tracking-ptz-system-for-vtol-fix-wing-uav-airborne-aviation-tracking-antennas-for-long-range-communications/">XK-FT300 Airborne PTZ — Xingkai Tech</a> — GPS-dependent commercial system; shows the approach replaced here</li>
         <li><a href="https://github.com/OpenIPC/wiki/blob/master/en/fpv.md">OpenIPC FPV Wiki</a> — digital FPV with native MAVLink; relevant if GPS constraint is lifted</li>
       </ul>
     </div>
