@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>{{TITLE}}</title>
+<style>
+  /* Tufte-inspired: generous whitespace, sidenotes, restrained typography */
+  html { font-size: 15px; }
+  body { font-family: "et-book", Palatino, "Palatino Linotype", "Book Antiqua", Georgia, serif;
+         background: #fffff8; color: #111;
+         max-width: 1400px; margin: 4rem auto; padding: 0 2rem; }
+  article { width: 60%; max-width: 660px; margin-left: 4rem; }
+  @media (max-width: 1000px) { body { margin: 2rem auto; } article { width: auto; margin-left: 0; max-width: 660px; } }
+
+  h1 { font-weight: 400; font-size: 2.4rem; line-height: 1.1; margin: 0 0 .5rem; font-style: italic; }
+  h2 { font-weight: 400; font-size: 1.55rem; font-style: italic; margin: 3rem 0 .8rem; }
+  h3 { font-weight: 400; font-size: 1.2rem; margin: 1.6rem 0 .5rem; }
+  .subtitle { font-style: italic; color: #555; font-size: 1.05rem; margin-bottom: 2.5rem; }
+
+  p, li { font-size: 1.05rem; line-height: 1.7; }
+  p { margin: 0 0 1rem; }
+
+  /* Sidenotes for unknowns/limits, floated into the right margin */
+  .sidenote {
+    float: right;
+    clear: right;
+    margin-right: -60%;
+    width: 50%;
+    font-size: .82rem;
+    line-height: 1.45;
+    color: #444;
+    margin-top: .2rem;
+    margin-bottom: .8rem;
+    font-style: italic;
+  }
+  @media (max-width: 1000px) { .sidenote { float: none; margin: .35rem 0 .85rem 1rem;
+                                            width: auto; border-left: 2px solid #ccc; padding-left: .75rem; } }
+  .sidenote .label { font-style: normal; color: #888; font-variant: small-caps; letter-spacing: .03em; margin-right: .25em; }
+
+  table { border-collapse: collapse; width: 100%; margin: .5rem 0 1.5rem; font-size: .95rem; }
+  th, td { padding: .5rem .65rem .5rem 0; text-align: left; border-bottom: 1px solid #ccc; vertical-align: top; }
+  th { font-style: italic; font-weight: 400; color: #555; border-bottom: 1px solid #111; }
+
+  ol.steps > li { margin-bottom: 1.5rem; }
+  ol.steps .complexity { font-variant: small-caps; letter-spacing: .04em;
+                         color: #888; font-size: .85rem; margin-left: .4rem; }
+  ol.steps .deps { font-style: italic; color: #777; font-size: .9rem; }
+
+  ul.refs li { margin: .55rem 0; }
+  a { color: #1a4f7a; text-decoration: none; border-bottom: 1px solid #c4d1dc; }
+  a:hover { border-bottom-color: #1a4f7a; }
+</style>
+</head>
+<body>
+<article>
+  <h1>{{TITLE}}</h1>
+  <div class="subtitle">{{DATE}} &middot; {{SLUG}}</div>
+
+  <h2>Overview</h2>
+  <p>{{OVERVIEW}}</p>
+
+  <h2>Key decisions</h2>
+  <table>
+    <thead><tr><th>Decision</th><th>Rationale</th></tr></thead>
+    <tbody>
+      <!-- {{DECISIONS_ROWS}} -->
+    </tbody>
+  </table>
+
+  <h2>Implementation flow</h2>
+  <ol class="steps">
+    <!-- For each step:
+    <li>
+      <strong>{{STEP_TITLE}}</strong> <span class="complexity">{{COMPLEXITY}}</span>
+      <p>{{STEP_PRODUCES}} <span class="deps">— depends on {{DEPS}}</span></p>
+      <span class="sidenote"><span class="label">Unknown unknowns.</span> {{STEP_UNKNOWNS}}</span>
+      <span class="sidenote"><span class="label">Limitations.</span> {{STEP_LIMITS}}</span>
+    </li>
+    -->
+  </ol>
+
+  <h2>Risks &amp; open questions</h2>
+  <ul>
+    <!-- {{RISKS}} -->
+  </ul>
+
+  <h2>References</h2>
+  <ul class="refs">
+    <!-- {{REFERENCES}} -->
+  </ul>
+</article>
+</body>
+</html>

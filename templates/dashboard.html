@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>{{TITLE}}</title>
+<style>
+  * { box-sizing: border-box; }
+  body { font: 14px/1.5 ui-sans-serif, system-ui, -apple-system, sans-serif;
+         margin: 0; background: #0f1419; color: #d7e3eb; }
+  header { padding: 1.5rem 2rem 1rem; border-bottom: 1px solid #1f2a33;
+           display: flex; align-items: baseline; gap: 1rem; flex-wrap: wrap; }
+  header h1 { margin: 0; font-size: 1.6rem; color: #fff; }
+  header .slug { color: #7a8d99; font-family: ui-monospace, monospace; font-size: .85rem; }
+  header .date { color: #5d6e7a; margin-left: auto; font-size: .85rem; }
+
+  .grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 1rem; padding: 1.25rem 2rem 2rem; }
+  .card { background: #151c23; border: 1px solid #1f2a33; border-radius: 8px; padding: 1rem 1.15rem; }
+  .card h2 { margin: 0 0 .65rem; font-size: .8rem; text-transform: uppercase; letter-spacing: .06em;
+             color: #6d8492; font-weight: 600; }
+  .col-12 { grid-column: span 12; }
+  .col-8  { grid-column: span 8; }
+  .col-4  { grid-column: span 4; }
+  @media (max-width: 880px) { .col-8, .col-4 { grid-column: span 12; } }
+
+  .overview { font-size: 1.05rem; line-height: 1.55; color: #e8f0f5; }
+
+  table { width: 100%; border-collapse: collapse; font-size: .9rem; }
+  th, td { padding: .5rem .7rem; text-align: left; border-bottom: 1px solid #1f2a33; vertical-align: top; }
+  th { color: #6d8492; font-weight: 600; font-size: .75rem; text-transform: uppercase; letter-spacing: .04em; }
+
+  .step { padding: .9rem 0; border-bottom: 1px dashed #1f2a33; }
+  .step:last-child { border-bottom: 0; }
+  .step-head { display: flex; align-items: center; gap: .6rem; margin-bottom: .35rem; }
+  .step-num { background: #1f3a4d; color: #8ec5e8; font-family: ui-monospace, monospace;
+              padding: 1px 7px; border-radius: 4px; font-size: .75rem; }
+  .step-title { font-weight: 600; color: #fff; }
+  .pill { font-size: .7rem; padding: 2px 8px; border-radius: 10px; font-family: ui-monospace, monospace; }
+  .pill.s { background: #1a3a2e; color: #6ed5a8; }
+  .pill.m { background: #3a341a; color: #d9c66e; }
+  .pill.l { background: #3a2a1a; color: #e0a06e; }
+  .pill.xl { background: #3a1a1a; color: #e87070; }
+  .step-meta { margin-top: .35rem; font-size: .85rem; color: #94a8b5; }
+  .step-meta .label { color: #6d8492; font-weight: 600; }
+
+  ul.refs, ul.risks { margin: 0; padding-left: 1.1rem; }
+  ul.refs li, ul.risks li { margin: .35rem 0; }
+  a { color: #6ec1e8; }
+</style>
+</head>
+<body>
+  <header>
+    <h1>{{TITLE}}</h1>
+    <span class="slug">{{SLUG}}</span>
+    <span class="date">{{DATE}}</span>
+  </header>
+
+  <div class="grid">
+    <div class="card col-12">
+      <h2>Overview</h2>
+      <div class="overview">{{OVERVIEW}}</div>
+    </div>
+
+    <div class="card col-8">
+      <h2>Implementation flow</h2>
+      <!-- For each step:
+      <div class="step">
+        <div class="step-head">
+          <span class="step-num">{{N}}</span>
+          <span class="step-title">{{STEP_TITLE}}</span>
+          <span class="pill {{S|M|L|XL}}">{{COMPLEXITY}}</span>
+        </div>
+        <div>{{STEP_PRODUCES}}</div>
+        <div class="step-meta"><span class="label">Depends on:</span> {{DEPS}}</div>
+        <div class="step-meta"><span class="label">Unknown unknowns:</span> {{STEP_UNKNOWNS}}</div>
+        <div class="step-meta"><span class="label">Limitations:</span> {{STEP_LIMITS}}</div>
+      </div>
+      -->
+    </div>
+
+    <div class="card col-4">
+      <h2>Key decisions</h2>
+      <table>
+        <thead><tr><th>Decision</th><th>Why</th></tr></thead>
+        <tbody>
+          <!-- {{DECISIONS_ROWS}} -->
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card col-6" style="grid-column: span 6;">
+      <h2>Risks &amp; open questions</h2>
+      <ul class="risks"><!-- {{RISKS}} --></ul>
+    </div>
+
+    <div class="card col-6" style="grid-column: span 6;">
+      <h2>References</h2>
+      <ul class="refs"><!-- {{REFERENCES}} --></ul>
+    </div>
+  </div>
+</body>
+</html>

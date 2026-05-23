@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>{{TITLE}}</title>
+<style>
+  :root { color-scheme: light dark; }
+  body { font: 16px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+         max-width: 720px; margin: 3rem auto; padding: 0 1.25rem; color: #1a1a1a; }
+  @media (prefers-color-scheme: dark) { body { color: #e6e6e6; background: #111; } a { color: #8ab4f8; } }
+  h1 { font-size: 1.85rem; margin: 0 0 .25rem; }
+  h2 { font-size: 1.15rem; margin: 2.25rem 0 .6rem; border-bottom: 1px solid currentColor; padding-bottom: .2rem; }
+  h3 { font-size: 1rem; margin: 1.4rem 0 .35rem; }
+  .meta { color: #777; font-size: .9rem; margin-bottom: 2rem; }
+  table { border-collapse: collapse; width: 100%; margin: .5rem 0 1rem; font-size: .95rem; }
+  th, td { text-align: left; padding: .45rem .6rem; border-bottom: 1px solid #ddd; vertical-align: top; }
+  @media (prefers-color-scheme: dark) { th, td { border-bottom-color: #333; } }
+  ol.steps > li { margin-bottom: 1.1rem; }
+  ol.steps .tags { display: inline-flex; gap: .35rem; margin-left: .4rem; vertical-align: middle; }
+  ol.steps .tag { font-size: .72rem; padding: 1px 6px; border-radius: 9px; background: #eee; color: #444; }
+  @media (prefers-color-scheme: dark) { ol.steps .tag { background: #2a2a2a; color: #bbb; } }
+  .unknowns, .limits { font-size: .9rem; color: #666; margin: .2rem 0 .2rem 1rem; }
+  @media (prefers-color-scheme: dark) { .unknowns, .limits { color: #999; } }
+  .label { font-weight: 600; color: #444; }
+  @media (prefers-color-scheme: dark) { .label { color: #ccc; } }
+  ul.refs { padding-left: 1.1rem; }
+  ul.refs li { margin: .35rem 0; }
+</style>
+</head>
+<body>
+  <h1>{{TITLE}}</h1>
+  <div class="meta">{{DATE}} &middot; {{SLUG}}</div>
+
+  <h2>Overview</h2>
+  <p>{{OVERVIEW}}</p>
+
+  <h2>Key decisions</h2>
+  <table>
+    <thead><tr><th>Decision</th><th>Rationale</th></tr></thead>
+    <tbody>
+      <!-- {{DECISIONS_ROWS}} -->
+    </tbody>
+  </table>
+
+  <h2>Implementation flow</h2>
+  <ol class="steps">
+    <!-- For each step:
+    <li>
+      <strong>{{STEP_TITLE}}</strong>
+      <span class="tags"><span class="tag">{{COMPLEXITY}}</span><span class="tag">deps: {{DEPS}}</span></span>
+      <div>{{STEP_PRODUCES}}</div>
+      <div class="unknowns"><span class="label">Unknown unknowns:</span> {{STEP_UNKNOWNS}}</div>
+      <div class="limits"><span class="label">Limitations:</span> {{STEP_LIMITS}}</div>
+    </li>
+    -->
+  </ol>
+
+  <h2>Risks &amp; open questions</h2>
+  <ul>
+    <!-- {{RISKS}} -->
+  </ul>
+
+  <h2>References</h2>
+  <ul class="refs">
+    <!-- {{REFERENCES}} -->
+  </ul>
+</body>
+</html>
